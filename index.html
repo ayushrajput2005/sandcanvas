@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sand Canvas</title>
+    <link rel="icon" type="image/x-icon" href="assets/logo.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-text">SAND CANVAS</div>
+        <div class="loading-bar">
+            <div class="loading-bar-fill" id="loadingBarFill"></div>
+        </div>
+    </div>
+    
+    <div class="menu-bar" id="menuBar" title="Sand Settings">
+        <div class="menu-icon" id="menuIcon">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    <div class="about-bar" id="aboutBar" title="About Sand Canvas">
+        <div class="about-icon" id="aboutIcon">
+            <img src="assets/about.png" alt="About" class="about-icon-img">
+        </div>
+    </div>
+    <div class="share-bar" id="shareBar" title="Share your art">
+        <div class="share-icon" id="shareIcon">
+            <img src="assets/share.png" alt="Share" class="share-icon-img">
+        </div>
+    </div>
+    
+    <div class="sidebar" id="sidebar">
+        <h3 class="title">Sand Controls</h3>
+        <div class="control-group">
+            <label for="cursorSize">Cursor Size</label>
+            <div class="value-display">
+                <button class="nes-btn is-small" onclick="adjustValue('cursorSize', -5)">-</button>
+                <span id="cursorSizeValue" class="nes-text">32</span>
+                <button class="nes-btn is-small" onclick="adjustValue('cursorSize', 5)">+</button>
+            </div>
+            <input type="range" id="cursorSize" class="nes-progress" min="5" max="50" value="32">
+        </div>
+        <div class="control-group">
+            <label for="spawnRate">Spawn Rate</label>
+            <div class="value-display">
+                <button class="nes-btn is-small" onclick="adjustValue('spawnRate', -1)">-</button>
+                <span id="spawnRateValue" class="nes-text">5</span>
+                <button class="nes-btn is-small" onclick="adjustValue('spawnRate', 1)">+</button>
+            </div>
+            <input type="range" id="spawnRate" class="nes-progress" min="1" max="20" value="5">
+        </div>
+        <div class="control-group">
+            <label for="particleSize">Particle Size</label>
+            <div class="value-display">
+                <button class="nes-btn is-small" onclick="adjustValue('particleSize', -1)">-</button>
+                <span id="particleSizeValue" class="nes-text">7</span>
+                <button class="nes-btn is-small" onclick="adjustValue('particleSize', 1)">+</button>
+            </div>
+            <input type="range" id="particleSize" class="nes-progress" min="2" max="8" value="7">
+        </div>
+        <div class="control-group">
+            <label for="gravity">Gravity</label>
+            <div class="value-display">
+                <button class="nes-btn is-small" onclick="adjustValue('gravity', -1)">-</button>
+                <span id="gravityValue" class="nes-text">4</span>
+                <button class="nes-btn is-small" onclick="adjustValue('gravity', 1)">+</button>
+            </div>
+            <input type="range" id="gravity" class="nes-progress" min="1" max="20" value="4">
+        </div>
+        <div class="control-group colors">
+            <div class="color-control">
+                <label for="bgColor">Background</label>
+                <input type="color" id="bgColor" value="#9e9e9e" class="nes-input">
+            </div>
+            <div class="color-control">
+                <label for="sandColor">Sand Color</label>
+                <div class="color-with-rgb">
+                    <input type="color" id="sandColor" value="#e2c275" class="nes-input">
+                    <label class="nes-checkbox">
+                        <input type="checkbox" id="sandRGB">
+                        <span>RGB</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tool-buttons">
+        <button class="nes-btn" id="clearBtn" title="Clear Canvas">
+            <img src="assets/dustbin.svg" alt="Clear" class="tool-icon">
+        </button>
+        <button class="nes-btn" id="windBtn" title="Toggle Wind/Air">
+            <img src="assets/wind.svg" alt="Wind" class="tool-icon">
+        </button>
+        <button class="nes-btn" id="soundBtn" title="Toggle Sound">
+            <img src="assets/unmute.svg" alt="Sound" class="tool-icon" id="soundIcon">
+        </button>
+        <button class="nes-btn" id="eraserBtn" title="Eraser Tool">
+            <img src="assets/eraser.svg" alt="Eraser" class="tool-icon">
+        </button>
+        <button class="nes-btn" id="hollowSquareBtn" title="Draw Hollow Square">
+            <img src="assets/square.svg" alt="Hollow Square" class="tool-icon">
+        </button>
+        <button class="nes-btn" id="hollowCircleBtn" title="Draw Hollow Circle">
+            <img src="assets/circle.png" alt="Hollow Circle" class="tool-icon">
+        </button>
+        <input type="color" id="shapeColorPicker" value="#444444" style="display:none; position:absolute; z-index:999; width:36px; height:36px; border:2px solid #222; box-shadow:2px 2px 0 #222; border-radius:7px; background:#fff; cursor:pointer;" />
+        <button class="nes-btn" id="pencilBtn" title="Solid Sand Pen">
+            <img src="assets/pencil.svg" alt="Solid Sand Pen" class="tool-icon">
+        </button>
+        <input type="color" id="penColorPicker" value="#444444" style="display:none; position:absolute; z-index:999; width:36px; height:36px; border:2px solid #222; box-shadow:2px 2px 0 #222; border-radius:7px; background:#fff; cursor:pointer;" />
+        <button class="nes-btn" id="gravityToggleBtn" title="Toggle Gravity">
+            <img src="assets/play.svg" alt="Gravity On" class="tool-icon" id="gravityToggleIcon">
+        </button>
+        <button class="nes-btn" id="mixBtn" title="Mix Sand">
+            <img src="assets/hand.svg" alt="Mix Sand" class="tool-icon">
+        </button>
+        <button class="nes-btn" id="sandColorBtn" title="Sand Color Picker">
+            <img src="assets/sand.svg" alt="Sand Color Picker" class="tool-icon">
+        </button>
+        <input type="color" id="sandColorPicker" value="#e2c275" style="display:none; position:absolute; z-index:999; width:36px; height:36px; border:2px solid #222; box-shadow:2px 2px 0 #222; border-radius:7px; background:#fff; cursor:pointer;" />
+        <button class="nes-btn" id="paletteBtn" title="Colorful Sand" style="position:relative;">
+            <img src="assets/palette.svg" alt="Colorful Sand" class="tool-icon">
+        </button>
+        <select id="paletteDropdown" style="display:none; position:absolute; left:calc(100% + 5px); bottom:0; z-index:999; min-width:120px; border:2px solid #222; box-shadow:2px 2px 0 #222; border-radius:7px; background:#fff; color:#222; font-family:'Press Start 2P',cursive; font-size:0.9rem; padding:6px 10px;">
+            <option value="sunset">Sunset</option>
+            <option value="ocean">Ocean</option>
+            <option value="pastel">Pastel</option>
+            <option value="mono">Monochrome</option>
+            <option value="neon">Neon</option>
+        </select>
+    </div>
+    <canvas id="sandCanvas"></canvas>
+    <div id="customModal" class="modal" style="display:none;">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content" id="customModalContent">
+            <div class="modal-message" id="customModalMessage"></div>
+            <div class="modal-actions">
+                <button id="modalOkBtn">OK</button>
+                <button id="modalCancelBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <div id="aboutModal" class="modal" style="display:none;">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content about-modal-content">
+            <div class="profile-section">
+                <div class="profile-pic-container">
+                    <img src="assets/pfp.png" alt="Ayush" class="profile-pic">
+                </div>
+            </div>
+            <h3 class="title">About Sand Canvas</h3>
+            <div class="about-text">
+                <p>Hi, I'm Ayush — an indie app/web developer and game dev enthusiast with a love for pixel art and creative coding. Sand Canvas is a playful sandbox simulator I built to let you create mesmerizing sand art right in your browser. It's a fun project made with heart, letting you draw, blend, and express freely with falling grains of digital sand. Try it out, share your creations, and most of all — have fun!</p>
+                <p>If you like what you see or want to connect, feel free to check out my <a href="https://ayushrajput2005.github.io/Ayushs-Portfolio/" target="_blank" class="portfolio-link">portfolio</a>!</p>
+                <p style="margin-top:18px;">
+                  If you enjoyed using Sand Canvas or just want to support my creative experiments, feel free to <a href="https://buymeacoffee.com/SoulFromAbyss" target="_blank" class="portfolio-link">buymeacoffee</a> — it helps keep the pixels flowing ☕✨
+                </p>
+            </div>
+            <div class="modal-actions">
+                <button id="aboutCloseBtn" class="nes-btn">Close</button>
+            </div>
+        </div>
+    </div>
+    <div id="shareModal" class="modal" style="display:none;">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content share-modal-content">
+            <h3 class="title">Share Your Sand Art</h3>
+            <div class="share-preview-section">
+                <img id="sharePreviewImg" class="share-preview-img" src="" alt="Sand Canvas Screenshot" />
+            </div>
+            <div class="share-actions">
+                <button id="shareImageBtn" class="share-btn share-image-btn">Share Image</button>
+                <a id="shareDownload" class="share-btn download" download="sand-canvas.png">Download</a>
+            </div>
+            <div class="modal-actions">
+                <button id="shareCloseBtn" class="nes-btn">Close</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
